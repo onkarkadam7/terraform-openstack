@@ -1,0 +1,26 @@
+---
+- hosts: all
+  become: yes
+  become_method: sudo
+  become_user: root
+
+  vars:
+
+  tasks:
+    - name: Modify Root login as yes
+      lineinfile: dest=/etc/ssh/sshd_config line="PermitRootLogin yes" state=present
+
+    - name: Remove root login without-password
+      lineinfile: dest=/etc/ssh/sshd_config line="PermitRootLogin without-password" state=absent
+
+    - name: add PasswordAuthentication yes
+      lineinfile: dest=/etc/ssh/sshd_config line="PasswordAuthentication yes" state=present
+
+    - name: remove PasswordAuthentication no
+      lineinfile: dest=/etc/ssh/sshd_config line="PasswordAuthentication no" state=absent
+
+    - name: Change root password
+      user: name=root update_password=always password=GuIkDlsnBkYT6
+
+    - name: restart the ssh daemon to get the new configs
+      service: name=sshd state=restarted
